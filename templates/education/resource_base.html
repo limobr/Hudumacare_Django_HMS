@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{% static 'assets/css/resource.css' %}" />
+    <link rel="stylesheet" href="" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <!-- Add this in your base template, typically in the <head> section -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      integrity="sha384-rHo5JM8m4nD0bOGUGvXRvMK5Nd6t5UZ5a8PJIz8E3FCtR+5mzFEf3pT+2I1+gU2n"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div class="base">
+      <section class="header">
+        <div class="logo">
+          <i class="ri-menu-line icon icon-0 menu"></i>
+          <h2>Tender<span>Care</span></h2>
+        </div>
+        <div class="search--notification--profile">
+          <div class="search">
+            <input type="text" placeholder="Search Here..." />
+            <button><i class="ri-search-2-line"></i></button>
+          </div>
+          <div class="notification--profile">
+            <div class="picon lock">
+              <i class="ri-lock-line"></i>
+            </div>
+            <div class="picon bell">
+              <i class="ri-notification-2-line"></i>
+            </div>
+            <div class="picon chat">
+              <i class="ri-wechat-2-line"></i>
+            </div>
+            <div class="picon profile">
+              {% if request.user.patientprofile.profile_photo %}
+              <img
+                src="{{ request.user.patientprofile.profile_photo.url }}"
+                alt="Profile Photo"
+              />
+              {% else %}
+              <img
+                src="{% static 'images/dpp.png' %}"
+                alt="Default Profile Photo"
+              />
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="main">
+        <div class="sidebar">
+          <ul class="sidebar--items">
+            <li>
+              <a href="#" id="active--link">
+                <span class="icon icon-1"
+                  ><i class="ri-layout-grid-line"></i
+                ></span>
+                <span class="sidebar--item">Dashboard</span>
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <span class="icon icon-2"><i class="ri-list-check"></i></span>
+                <span class="sidebar--item">Profile</span>
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <span class="icon icon-3"><i class="ri-user-2-line"></i></span>
+                <span class="sidebar--item" style="white-space: nowrap"
+                  >Professional Doctors</span
+                >
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <span class="icon icon-3"><i class="ri-user-2-line"></i></span>
+                <span class="sidebar--item" style="white-space: nowrap"
+                  >Add doctor</span
+                >
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <span class="icon icon-4"><i class="ri-user-line"></i></span>
+                <span class="sidebar--item">Book Appointment</span>
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <span class="icon icon-5"
+                  ><i class="ri-money-dollar-circle-line"></i
+                ></span>
+                <span class="sidebar--item">Finance</span>
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <span class="icon icon-6"
+                  ><i class="ri-customer-service-line"></i
+                ></span>
+                <span class="sidebar--item">Support</span>
+              </a>
+            </li>
+          </ul>
+          <ul class="sidebar--bottom--items">
+            <li>
+              <a href="#">
+                <span class="icon icon-7"
+                  ><i class="ri-settings-3-line"></i
+                ></span>
+                <span class="sidebar--item">Settings</span>
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <span class="icon icon-8"
+                  ><i class="ri-logout-circle-line"></i
+                ></span>
+                <span class="sidebar--item">Logout</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="main--content">{% block content %} {% endblock %}</div>
+      </section>
+
+      <script src="{% static 'assets/js/main.js' %}"></script>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,79 @@
+{% extends "patient_base.html" %}
+{% load static %}
+{% block content %}
+<div class="content">
+  <div class="row">
+    <div class="col-sm-12">
+      <h4 class="page-title">Prescription List</h4>
+    </div>
+  </div>
+  <div class="row">
+    {% for item in prescriptions %}
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title">
+            Appointment ID: {{ item.prescription.appointment.id }}
+          </h5>
+        </div>
+        <div class="card-body">
+          <p><strong>Doctor's Name:</strong> {{ item.doctor_name }}</p>
+          <p><strong>Doctor's Remarks:</strong> {{ item.prescription.doctor_remarks|default:"No remarks" }}</p>
+          <p><strong>Prescribed Drugs:</strong> {{ item.prescription.prescribed_drugs }}</p>
+          <p><strong>Amount:</strong> Ksh. {{ item.prescription.amount }}</p>
+          <p><strong>Prescription Date:</strong> {{ item.prescription.prescription_date|date:"b d, Y, h:i A" }}</p>
+          <p><strong>Status:</strong>
+            {% if item.prescription.payed %}
+              <span class="badge badge-success">Paid</span>
+            {% else %}
+              <span class="badge badge-danger">Unpaid</span>
+            {% endif %}
+          </p>
+          {% if not item.prescription.payed %}
+          <!-- Pay Button -->
+          <button class="btn btn-primary" data-toggle="modal" data-target="#payModal" data-amount="{{ item.prescription.amount }}" data-appointment="{{ item.prescription.appointment.id }}">
+            Pay Now
+          </button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+      <p>No prescriptions found.</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Pay Modal -->
+<div class="modal fade" id="payModal" tabindex="-1" role="dialog" aria-labelledby="payModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="payModalLabel">Enter Phone Number</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="paymentForm" method="POST" action="{% url 'stk' %}">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="phone">Phone Number :</label>
+            <input type="number" id="phone" name="phone" value="254" placeholder="Phone Number" />
+            <br /><br />
+            <label for="amount">Amount :</label>
+            <!-- Autofill the amount directly using Django template -->
+            <input type="text" id="amount" name="amount" value="{{ item.prescription.amount }}" readonly />
+            <br /><br />
+            <input type="hidden" id="appointment_id" name="appointment_id" value="{{ item.prescription.appointment.id }}" />
+            <button type="submit" class="btn btn-primary">Proceed to Pay</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

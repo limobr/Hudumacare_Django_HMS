@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="content">
+    <div class="row">
+        <div class="col-sm-7 col-6">
+            <h4 class="page-title">My Profile</h4>
+        </div>
+        <div class="col-sm-5 col-6 text-right m-b-30">
+            <a href="{% url 'edit_doctor_profile' %}" class="btn btn-primary btn-rounded"><i class="fa fa-plus"></i> Edit Profile</a>
+        </div>
+    </div>
+    <div class="card-box profile-header">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="profile-view">
+                    <div class="profile-img-wrap">
+                        <div class="profile-img">
+                            {% if user_profile.profile_picture %}
+                                <a href="#"><img class="avatar" src="{{ user_profile.profile_picture.url }}" alt="Profile Picture"></a>
+                            {% else %}
+                                <a href="#"><img class="avatar" src="{% static 'assets/img/default-avatar.png' %}" alt="Default Picture"></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="profile-basic">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="profile-info-left">
+                                    <h3 class="user-name m-t-0 mb-0">{{ user_profile.user.get_full_name }}</h3>
+                                    <small class="text-muted">Patient</small>
+                                    <div class="staff-id">Patient ID : {{ user_profile.user.id }}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-7">
+                                <ul class="personal-info">
+                                    <li>
+                                        <span class="title">Phone:</span>
+                                        <span class="text">
+                                            {% if patient_contact_info %}
+                                                {{ patient_contact_info.email }}
+                                            {% else %}
+                                                N/A
+                                            {% endif %}
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="title">Email:</span>
+                                        <span class="text">{{ user_profile.user.email }}</span>
+                                    </li>
+                                    <li>
+                                        <span class="title">Birthday:</span>
+                                        <span class="text">{{ user_profile.date_of_birth|date:"jS F, Y" if user_profile.date_of_birth else 'N/A' }}</span>
+                                    </li>
+                                    <li>
+                                        <span class="title">Address:</span>
+                                        <span class="text">{{ patient_contact_info.address if patient_contact_info else 'N/A' }}</span>
+                                    </li>
+                                    <li>
+                                        <span class="title">Gender:</span>
+                                        <span class="text">{{ user_profile.gender }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>                        
+            </div>
+        </div>
+    </div>
+    <div class="profile-tabs">
+        <ul class="nav nav-tabs nav-tabs-bottom">
+            <li class="nav-item"><a class="nav-link active" href="#about-cont" data-toggle="tab">About</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane show active" id="about-cont">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card-box">
+                            <h3 class="card-title">Medical Information</h3>
+                            <ul>
+                                <li><strong>Primary Diagnosis:</strong> {{ patient_medical_info.primary_diagnosis if patient_medical_info else 'N/A' }}</li>
+                                <li><strong>Secondary Diagnosis:</strong> {{ patient_medical_info.secondary_diagnosis if patient_medical_info else 'N/A' }}</li>
+                                <li><strong>Blood Type:</strong> {{ patient_medical_info.blood_type if patient_medical_info else 'N/A' }}</li>
+                                <li><strong>Allergies:</strong> {{ patient_medical_info.allergies if patient_medical_info else 'N/A' }}</li>
+                                <li><strong>Chronic Conditions:</strong> {{ patient_medical_info.chronic_conditions if patient_medical_info else 'N/A' }}</li>
+                            </ul>
+                        </div>
+                        <div class="card-box">
+                            <h3 class="card-title">Insurance Information</h3>
+                            <ul>
+                                <li><strong>Insurance Provider:</strong> {{ patient_insurance_info.insurance_provider if patient_insurance_info else 'N/A' }}</li>
+                                <li><strong>Policy Number:</strong> {{ patient_insurance_info.policy_number if patient_insurance_info else 'N/A' }}</li>
+                            </ul>
+                        </div>
+                        <div class="card-box">
+                            <h3 class="card-title">Social Information</h3>
+                            <ul>
+                                <li><strong>Marital Status:</strong> {{ patient_social_info.marital_status if patient_social_info else 'N/A' }}</li>
+                                <li><strong>Occupation:</strong> {{ patient_social_info.occupation if patient_social_info else 'N/A' }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

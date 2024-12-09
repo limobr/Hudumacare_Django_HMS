@@ -1,0 +1,69 @@
+{% extends "doctor_base.html" %}
+{% load static %}
+{% block content %}
+
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+<div class="custom-edit-container content">
+    <div class="container mt-5">
+        <h2>Edit Patient Education Resource</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!-- Input field for the title -->
+            <div class="form-group">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" value="{{ form.title.value }}" class="form-control">
+            </div>
+
+            <!-- Dropdown menu for the category -->
+            <div class="form-group">
+                <label for="category">Category:</label>
+                <select id="category" name="category" class="form-control">
+                    {% for category in form.fields.category.queryset %}
+                        <option value="{{ category.id }}" {% if category.id == form.category.value %}selected{% endif %}>{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Input field for the image -->
+            <div class="form-group">
+                <label for="image">Image:</label>
+                <input type="file" id="image" name="image" class="form-control">
+            </div>
+
+            <!-- Quill editor -->
+            <div class="form-group">
+                <label for="editor">Content:</label>
+                <div id="editor" class="quill-editor">{{ form.content.value|safe }}</div>
+                <input type="hidden" name="content" id="content-field"> <!-- Hidden input field to store Quill's data -->
+            </div>
+
+            <!-- Submit button -->
+            <button type="submit" class="btn btn-primary">Update Resource</button>
+        </form>
+    </div>
+</div>
+
+<!-- Include Quill's JavaScript -->
+<script>
+    var quill = new Quill('#editor', {
+        theme: 'snow', // Use Quill's snow theme
+        modules: {
+            toolbar: [
+                [{ 'header': [1, 2, false] }],
+                ['bold', 'italic', 'underline'],
+                ['image'] // Add image upload button to the toolbar
+            ]
+        }
+    });
+
+    // Listen for form submission
+    document.querySelector('form').onsubmit = function() {
+        // Get Quill's content as HTML
+        var content = quill.root.innerHTML;
+        // Set the value of the hidden input field
+        document.getElementById('content-field').value = content;
+    };
+</script>
+{% endblock %}

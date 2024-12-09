@@ -1,0 +1,52 @@
+{% extends "doctor_base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="content">
+        <div class="row">
+            <div class="col-sm-12">
+                <h4 class="page-title">Prescription List</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="table table-striped custom-table">
+                        <thead>
+                            <tr>
+                                <th>Appointment ID</th>
+                                <th>Doctor's Remarks</th>
+                                <th>Prescribed Drugs</th>
+                                <th>Amount</th>
+                                <th>Prescription Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in prescriptions %}
+                                <tr>
+                                    <td>{{ item.prescription.appointment.id }}</td>
+                                    <td>{{ item.prescription.doctor_remarks|default:"No remarks" }}</td>
+                                    <td>{{ item.prescription.prescribed_drugs }}</td>
+                                    <td>Ksh. {{ item.prescription.amount }}</td>
+                                    <td>{{ item.prescription.prescription_date|date:"b d, Y, h:i A" }}</td>
+                                    <td>
+                                        {% if item.prescription.payed %}
+                                            <span class="badge badge-success">Paid</span>
+                                        {% else %}
+                                            <span class="badge badge-danger">Unpaid</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="6">No prescriptions found.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

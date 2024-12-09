@@ -1,0 +1,147 @@
+{% extends 'edu_base.html' %}
+{% load static %}
+
+{% block content %}
+    <link rel="stylesheet" href="styles.css">
+    <style>
+
+        .resource_container img, video, iframe{
+            max-width: 80%;
+            height: auto;
+        }
+        .resource_container {
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .resource_main {
+            border-radius: 10px;
+            flex: 2;
+            padding: 20px;
+            background-color: rgb(234, 219, 203);
+        }
+        
+        .resource_sidebar {
+            margin-left: 20px;
+            flex: 1; /* Added margin to separate from resource_main */
+            border-radius: 10px;
+            background-color: rgb(255, 255, 255);
+            border: 3px solid #7a1b1b;
+            list-style: none;
+        }
+        
+        .related-content, .other-content {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            margin-left: 20px;
+        }
+        
+        .related-resources {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .related_res {
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .resource-image {
+            width: 100%;
+            height: auto;
+            max-height: 100%; /* Limiting the image height */
+            object-fit: cover;
+            margin-right: 10px;
+        }
+        
+        .resource-details {
+            flex: 1;
+            margin-top: 0;
+        }
+        
+        .resource-details h4 {
+            color: goldenrod;
+            margin-bottom: 5px;
+        }
+        
+        .resource-details p {
+            margin-bottom: 5px;
+        }
+        
+        .read-more a {
+            color: blue;
+            text-decoration: underline;
+        }
+        
+        
+        h3 {
+            margin-top: 0;
+        }
+        h2 {
+            color: blue; /* Set title color to blue */
+        }
+
+        h3 {
+            color: goldenrod; /* Set heading color to goldenrod */
+        }
+
+        
+
+        /* Media query for smaller devices */
+        @media only screen and (max-width: 768px) {
+            .resource_container {
+                display: flex;
+                flex-wrap: wrap;
+                max-width: 90%;
+                margin: 0 auto;
+            }
+
+            .resource_container {
+                flex-direction: column;
+            }
+            
+            .resource_sidebar {
+                margin-left: 0px;
+                padding-left: 0;
+                padding-top: 20px;
+                order: 1; /* Change the order to display below resource_main */
+                margin-top: 10px; /* Reset margin for smaller devices */
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="resource_container">
+        <div class="resource_main">
+            <h2>{{ resource.title }}</h2>
+            <p>{{ resource.content|safe }}</p>
+        </div>
+        <div class="resource_sidebar">
+            <div class="related-content">
+                <h3>Related resources</h3>
+                <ul class="related-resources">
+    {% for related_resource, similarity_score in related_resources %}
+    <li class="related_res">
+        {% if related_resource.image %}
+        <img src="{{ related_resource.image.url }}" alt="{{ related_resource.title }}" class="resource-image">
+        {% else %}
+        <img src="/media/images/resource526.png" alt="Default Image" class="resource-image">
+        {% endif %}
+        <div class="resource-details">
+            <h4><a href="{{ related_resource.get_absolute_url }}">{{ related_resource.title }}</a></h4>
+            <p>{{ related_resource.content|striptags|truncatewords:20 }}</p>
+            <span class="read-more"><a href="{{ related_resource.get_absolute_url }}">Read more</span></p>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+
+                <!-- Display titles of related content here -->
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<style>
+    /* Custom Styles for Modal */
+.modal-content {
+    padding: 20px;
+}
+
+.moadal_doctor-img img {
+    border: 4px solid #f8f9fa; /* Border around image */
+    padding: 5px; /* Padding inside the border */
+}
+
+.doctor-info p {
+    margin-bottom: 1rem; /* Space between paragraphs */
+}
+
+</style>
+<div class="content">
+    <div class="row">
+        <div class="col-sm-4 col-3">
+            <h4 class="page-title">Doctors</h4>
+        </div>
+        <div class="col-sm-8 col-9 text-right m-b-20">
+            <a href="{% url 'add_doctor' %}" class="btn btn-primary btn-rounded float-right"><i class="fa fa-plus"></i> Add Doctor</a>
+        </div>
+    </div>
+
+    <div class="row doctor-grid">
+        {% for doc in doctors_data %}
+        <div class="col-md-4 col-sm-4 col-lg-3">
+            <div class="profile-widget">
+                <div class="doctor-img">
+                    <a class="avatar" href="#" data-toggle="modal" data-target="#doctorModal{{ doc.doctor.id }}">
+                        <img alt="" src="{% if doc.profile_picture %}{{ doc.profile_picture.url }}{% else %}{% static 'assets/img/user.jpg' %}{% endif %}">
+                    </a>
+                </div>
+                <h4 class="doctor-name text-ellipsis">
+                    <a href="#" data-toggle="modal" data-target="#doctorModal{{ doc.doctor.id }}">{{ doc.doctor.first_name }} {{ doc.doctor.last_name }}</a>
+                </h4>
+                <div class="doc-prof">{{ doc.specialization }}</div>
+                <div class="availability-status">
+                    <span class="badge badge-success">{{ doc.availability_status }}</span> 
+                </div>
+                <div class="user-country">
+                    <i class="fa fa-map-marker"></i> 
+                    {% if doc.contact_info %}
+                        {{ doc.contact_info.country|default:"Unknown" }}, 
+                        {{ doc.contact_info.county|default:"Unknown" }}
+                    {% else %}
+                        Unknown, Unknown
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Doctor Info Modal -->
+<div class="modal fade" id="doctorModal{{ doc.doctor.id }}" tabindex="-1" role="dialog" aria-labelledby="doctorModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="doctorModalLabel">{{ doc.doctor.first_name }} {{ doc.doctor.last_name }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Profile Picture -->
+                <div class="modal_doctor-img text-center mb-4">
+                    <img alt="" src="{% if doc.profile_picture %}{{ doc.profile_picture.url }}{% else %}{% static 'assets/img/user.jpg' %}{% endif %}" class="img-fluid rounded-circle" style="max-width: 150px;">
+                </div>
+
+                <!-- Doctor Info -->
+                <div class="doctor-info">
+                    <p><strong>Specialization:</strong> {{ doc.specialization }}</p>
+
+                    {% if doc.experience %}
+                        <p><strong>Experience:</strong> {{ doc.experience.job_position }} at {{ doc.experience.company_name }}</p>
+                    {% endif %}
+
+                    {% if doc.licensing %}
+                        <p><strong>License Number:</strong> {{ doc.licensing.license_number }}</p>
+                        <p><strong>License Expiry:</strong> {{ doc.licensing.license_expiry }}</p>
+                    {% endif %}
+
+                    {% if doc.contact_info %}
+                        <p><strong>Phone:</strong> {{ doc.contact_info.phone_number }}</p>
+                        <p><strong>Emergency Contact:</strong> {{ doc.contact_info.emergency_number }}</p>
+                        <p><strong>Address:</strong> {{ doc.contact_info.address }}, {{ doc.contact_info.county }}, {{ doc.contact_info.country }}</p>
+                    {% endif %}
+
+                    {% if doc.availability_status %}
+                        <p><strong>Availability Status:</strong> {{ doc.availability_status }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

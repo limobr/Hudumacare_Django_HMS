@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+    <title>Huduma Care</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/style.css' %}">
+    <!--[if lt IE 9]>
+		<script src="assets/js/html5shiv.min.js"></script>
+		<script src="assets/js/respond.min.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+    <div class="main-wrapper">
+        {% include 'header.html' %}
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-inner slimscroll">
+                <div id="sidebar-menu" class="sidebar-menu">
+                    <ul>
+                        <li class="menu-title">Main</li>
+                        <li class="{% if request.path == '/administration/' %}active{% endif %}">
+                            <a href="{% url 'admin_dashboard' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a>
+                        </li>
+                        <li class="{% if request.path == '/administration/doctors' %}active{% endif %}">
+                            <a href="{% url 'admin_doctors' %}"><i class="fa fa-user-md"></i> <span>Doctors</span></a>
+                        </li>
+                        <li class="{% if request.path == '/administration/patients' %}active{% endif %}">
+                            <a href="{% url 'admin_patients' %}"><i class="fa fa-wheelchair"></i> <span>Patients</span></a>
+                        </li>
+                        <li class="{% if request.path == '/administration/appointments' %}active{% endif %}">
+                            <a href="{% url 'admin_appointments' %}"><i class="fa fa-calendar"></i> <span>Appointments</span></a>
+                        </li>
+                        <li class="{% if request.path == '/administration/prescriptionss' %}active{% endif %}">
+                            <a href="{% url 'admin_prescription_list' %}"><i class="fa fa-calendar"></i> <span>Prescriptions</span></a>
+                        </li>
+                        <li class="{% if request.path == '/administration/schedules' %}active{% endif %}">
+                            <a href="{% url 'admin_schedules' %}"><i class="fa fa-calendar-check-o"></i> <span>Doctor Schedule</span></a>
+                        </li>
+                        <li class="{% if request.path == '/administration/departments' %}active{% endif %}">
+                            <a href="{% url 'admin_departments' %}"><i class="fa fa-building"></i> <span>Departments</span></a>
+                        </li>
+                        <li class="{% if request.path == '/administration/appointment-types' %}active{% endif %}">
+                            <a href="{% url 'admin_appointmentstypes' %}"><i class="fa fa-cogs"></i> <span>Appointment Types</span></a>
+                        </li>
+                        <li class="{% if request.path == '/patient-education/' %}active{% endif %}">
+                            <a href="{% url 'resource_list' %}"><i class="fa fa-book"></i> <span>Health Education</span></a>
+                        </li>
+                        <li class="{% if request.path == '/administration/retrieve-contacts' %}active{% endif %}">
+                            <a href="{% url 'admin_contacts' %}"><i class="fa fa-address-book"></i> <span>Contacts</span></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="page-wrapper">
+            
+                {% block content %}
+                {% endblock %}
+                      
+        </div>
+    </div>
+    <div class="sidebar-overlay" data-reff=""></div>
+    <script src="{% static 'assets/js/jquery-3.2.1.min.js' %}"></script>
+	<script src="{% static 'assets/js/popper.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.slimscroll.js' %}"></script>
+    <script src="{% static 'assets/js/Chart.bundle.js' %}"></script>
+    <script src="{% static 'assets/js/chart.js' %}"></script>
+    <script src="{% static 'assets/js/app.js' %}"></script>
+    <script src="{% static 'assets/js/moment.min.js' %}"></script>
+    <script src="{% static 'assets/js/select2.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap-datetimepicker.min.js' %}"></script>
+    
+
+</body>
+
+
+
+</html>

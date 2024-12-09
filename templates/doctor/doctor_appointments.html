@@ -1,0 +1,196 @@
+{% extends "doctor_base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+    /* Custom Badge Status Colors */
+    .custom-badge {
+        padding: 5px 10px;
+        border-radius: 20px;
+        color: white;
+    }
+
+    .status-confirmed {
+        background-color: #4CAF50; /* Green for confirmed */
+    }
+
+    .status-pending {
+        background-color: #FF9800; /* Orange for pending */
+    }
+
+    .status-cancelled {
+        background-color: #F44336; /* Red for cancelled */
+    }
+
+    .status-rescheduled {
+        background-color: #2196F3; /* Blue for rescheduled */
+    }
+
+    .status-completed {
+        background-color: #9C27B0; /* Purple for completed */
+    }
+</style>
+
+<div class="content">
+    <div class="row">
+        <div class="col-sm-4 col-3">
+            <h4 class="page-title">My Appointments</h4>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table table-striped custom-table">
+                    <thead>
+                        <tr>
+                            <th>Appointment ID</th>
+                            <th>Patient Name</th>
+                            <th>Age</th>
+                            <th>Doctor Name</th>
+                            <th>Department</th>
+                            <th>Appointment Date</th>
+                            <th>Appointment Time</th>
+                            <th>Status</th>
+                            <th class="text-right">Action</th>
+                            <th class="text-right">Prescribe</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appointment in appointments %}
+                            <tr>
+                                <td>{{ appointment.id }}</td>
+                                <td>
+                                    <img width="28" height="28" src="{% if appointment.patient.userprofile.profile_picture %}{{ appointment.patient.userprofile.profile_picture.url }}{% else %}{% static 'assets/img/user.jpg' %}{% endif %}" class="rounded-circle m-r-5" alt="">
+                                    {{ appointment.patient.username }}
+                                </td>
+                                <td>{{ appointment.patient.age }}</td>
+                                <td>
+                                    <img width="28" height="28" src="{% if appointment.doctor.userprofile.profile_picture %}{{ appointment.doctor.userprofile.profile_picture.url }}{% else %}{% static 'assets/img/user.jpg' %}{% endif %}" class="rounded-circle m-r-5" alt="">
+                                    {{ appointment.doctor.username }}
+                                </td>
+                                <td>
+                                    {% if appointment.department %}
+                                        {{ appointment.department.name }}
+                                    {% else %}
+                                        No Department
+                                    {% endif %}
+                                </td>
+                                <td>{{ appointment.appointment_date }}</td>
+                                <td>{{ appointment.appointment_time }}</td>
+                                <td>
+                                    <span class="custom-badge status-{{ appointment.appointment_status|lower }}">
+                                        {{ appointment.appointment_status|capfirst }}
+                                    </span>
+                                </td>
+                                <td class="text-right">
+                                    <div class="d-inline-block" style="width: 45%;">
+                                        {% if appointment.appointment_status != 'confirmed' %}
+                                            <form method="POST" action="{% url 'doctor_confirm_appointment' appointment.id %}" style="display:inline; width: 100%;">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-success w-100">Confirm</button>
+                                            </form>
+                                        {% else %}
+                                            <span class="btn btn-secondary w-100">Confirmed</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="d-inline-block" style="width: 45%;">
+                                        <!-- View Details Button to Trigger Modal -->
+                                        <button type="button" class="btn btn-info w-100" data-toggle="modal" data-target="#view_appointment_{{ appointment.id }}">
+                                            Details
+                                        </button>
+                                    </div>
+                                </td>
+                                
+                                <td class="text-right">
+                                    {% if appointment.appointment_status == 'confirmed' %}
+                                        <!-- Button to open the prescription modal -->
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#prescriptionModal_{{ appointment.id }}">
+                                            Prescribe
+                                        </button>
+                                    {% else %}
+                                        <span>Not confirmed</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="10">No appointments found.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- View Appointment Modals -->
+{% for appointment in appointments %}
+<div class="modal fade" id="view_appointment_{{ appointment.id }}" tabindex="-1" role="dialog" aria-labelledby="viewAppointmentLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewAppointmentLabel">Appointment Details - ID: {{ appointment.id }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Patient:</strong> {{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</p>
+                <p><strong>Age:</strong> {{ appointment.patient.age }}</p>
+                <p><strong>Doctor:</strong> {{ appointment.doctor.username }}</p>
+                <p><strong>Department:</strong> {% if appointment.department %}{{ appointment.department.name }}{% else %}No Department{% endif %}</p>
+                <p><strong>Appointment Date:</strong> {{ appointment.appointment_date }}</p>
+                <p><strong>Appointment Time:</strong> {{ appointment.appointment_time }}</p>
+                <p><strong>Status:</strong> <span class="custom-badge status-{{ appointment.appointment_status|lower }}">{{ appointment.appointment_status|capfirst }}</span></p>
+                <p><strong>Reason:</strong> {{ appointment.reason|default:"No reason provided" }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<!-- Prescription Modal for Each Appointment -->
+{% for appointment in appointments %}
+<div class="modal fade" id="prescriptionModal_{{ appointment.id }}" tabindex="-1" role="dialog" aria-labelledby="prescriptionModalLabel_{{ appointment.id }}" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="prescriptionModalLabel_{{ appointment.id }}">Prescribe for Appointment ID: {{ appointment.id }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{% url 'doctor_add_prescription' appointment.id %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="doctor_remarks">Doctor's Remarks</label>
+                        <textarea class="form-control" id="doctor_remarks" name="doctor_remarks" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="prescribed_drugs">Prescribed Drugs</label>
+                        <textarea class="form-control" id="prescribed_drugs" name="prescribed_drugs" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Amount for Drugs</label>
+                        <input type="number" class="form-control" id="amount" name="amount" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Submit Prescription</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

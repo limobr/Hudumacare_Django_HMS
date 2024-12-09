@@ -1,0 +1,276 @@
+{% extends 'doctor_base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <h2>Edit Doctor Profile</h2>
+
+    <!-- Doctor Profile Edit Form -->
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- Doctor Basic Information -->
+        <div class="card-box">
+            <h3 class="card-title">Basic Information</h3>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="profile-img-wrap">
+                        <img class="inline-block" 
+                             src="{% if doctor_userprofile.profile_picture %}{{ doctor_userprofile.profile_picture.url }}{% else %}{% static 'assets/img/user.jpg' %}{% endif %}" 
+                             alt="user">
+                        <div class="fileupload btn">
+                            <span class="btn-text">Edit</span>
+                            <input class="upload" type="file" name="profile_picture">
+                        </div>
+                    </div>
+                    <div class="profile-basic">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-focus">
+                                    <label class="focus-label">First Name</label>
+                                    <input type="text" class="form-control floating" name="first_name" value="{{ doctor_userprofile.user.first_name }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group form-focus">
+                                    <label class="focus-label">Last Name</label>
+                                    <input type="text" class="form-control floating" name="last_name" value="{{ doctor_userprofile.user.last_name }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group form-focus">
+                                    <label class="focus-label">Birth Date</label>
+                                        <input class="form-control floating datetime" name="date_of_birth" type="date" value="{{ doctor_userprofile.date_of_birth|date:"Y-m-d" }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group form-focus select-focus">
+                                    <label class="focus-label">Gender</label>
+                                    <select class="select form-control floating" name="gender" required>
+                                        <option value="male" {% if doctor_userprofile.gender == "male" %}selected{% endif %}>Male</option>
+                                        <option value="female" {% if doctor_userprofile.gender == "female" %}selected{% endif %}>Female</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Doctor Contact Information -->
+        <div class="card-box">
+            <h3 class="card-title">Contact Information</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group form-focus">
+                        <label class="focus-label">Address</label>
+                        <input type="text" class="form-control floating" name="address" value="{{ doctor_contact_info.address }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group form-focus">
+                        <label class="focus-label">County</label>
+                        <input type="text" class="form-control floating" name="county" value="{{ doctor_contact_info.county }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group form-focus">
+                        <label class="focus-label">Country</label>
+                        <input type="text" class="form-control floating" name="country" value="{{ doctor_contact_info.country }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group form-focus">
+                        <label class="focus-label">Phone Number</label>
+                        <input type="text" class="form-control floating" name="phone_number" value="{{ doctor_contact_info.phone_number }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group form-focus">
+                        <label class="focus-label">Emergency Number</label>
+                        <input type="text" class="form-control floating" name="emergency_number" value="{{ doctor_contact_info.emergency_number }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Doctor Education Information -->
+        <div class="card-box">
+            <h3 class="card-title">Education</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group form-focus">
+                        <label class="focus-label">Institution</label>
+                        <input type="text" class="form-control floating" name="institution" value="{{ doctor_education.institution }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group form-focus">
+                        <label class="focus-label">Award</label>
+                        <input type="text" class="form-control floating" name="award" value="{{ doctor_education.award }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Specialization (Department)</label>
+                        <select class="form-control" name="specialization" required>
+                            {% for department in departments %}
+                                <option value="{{ department.id }}">{{ department.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group form-focus">
+                        <label class="focus-label">Start Date</label>
+                        <input type="date" class="form-control floating" name="start_date" value="{{ doctor_education.start_date|date:"Y-m-d" }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group form-focus">
+                        <label class="focus-label">Completion Date</label>
+                        <input type="date" class="form-control floating" name="completion_date" value="{{ doctor_education.completion_date|date:"Y-m-d" }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Doctor Licensing Information -->
+        <div class="card-box">
+            <h3 class="card-title">Licensing Information</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group form-focus">
+                        <label class="focus-label">License Number</label>
+                        <input type="text" class="form-control floating" name="license_number" value="{{ doctor_licensing.license_number }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group form-focus">
+                        <label class="focus-label">Issuing Authority</label>
+                        <input type="text" class="form-control floating" name="license_issuing_authority" value="{{ doctor_licensing.license_issuing_authority }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group form-focus">
+                        <label class="focus-label">License Expiry</label>
+                        <input type="date" class="form-control floating" name="license_expiry" value="{{ doctor_licensing.license_expiry|date:"Y-m-d" }}">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-box">
+            <h3 class="card-title">Experience Information</h3>
+        
+            <!-- Existing experiences rendered by the server -->
+            {% for experience in doctor_experience %}
+            <div class="experience-entry" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 8px;">
+                <h4>Experience {{ forloop.counter }}</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group form-focus">
+                            <label class="focus-label">Company Name</label>
+                            <input type="text" class="form-control floating" name="company_name_{{ forloop.counter }}" value="{{ experience.company_name }}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group form-focus">
+                            <label class="focus-label">Location</label>
+                            <input type="text" class="form-control floating" name="location_{{ forloop.counter }}" value="{{ experience.location }}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group form-focus">
+                            <label class="focus-label">Job Position</label>
+                            <input type="text" class="form-control floating" name="job_position_{{ forloop.counter }}" value="{{ experience.job_position }}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group form-focus">
+                            <label class="focus-label">Period From</label>
+                            <input type="date" class="form-control floating" name="period_from_{{ forloop.counter }}" value="{{ experience.period_from|date:'Y-m-d' }}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group form-focus">
+                            <label class="focus-label">Period To</label>
+                            <input type="date" class="form-control floating" name="period_to_{{ forloop.counter }}" value="{{ experience.period_to|date:'Y-m-d' }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        
+            <!-- Empty template for adding new experience -->
+            <div class="experience-entry d-none" id="experience-template" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 8px;">
+                <h4>New Experience</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group form-focus">
+                            <label class="focus-label">Company Name</label>
+                            <input type="text" class="form-control floating" name="company_name_new">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group form-focus">
+                            <label class="focus-label">Location</label>
+                            <input type="text" class="form-control floating" name="location_new">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group form-focus">
+                            <label class="focus-label">Job Position</label>
+                            <input type="text" class="form-control floating" name="job_position_new">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group form-focus">
+                            <label class="focus-label">Period From</label>
+                            <input type="date" class="form-control floating" name="period_from_new">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group form-focus">
+                            <label class="focus-label">Period To</label>
+                            <input type="date" class="form-control floating" name="period_to_new">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Button to add new experience -->
+            <button type="button" class="btn btn-primary" id="add-experience">+ Add Experience</button>
+        </div>
+        
+        
+        <!-- Save Button -->
+        <div class="row">
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    document.getElementById('add-experience').addEventListener('click', function() {
+        // Clone the hidden experience template
+        var experienceTemplate = document.getElementById('experience-template');
+        var clone = experienceTemplate.cloneNode(true);
+
+        // Remove the 'd-none' class to make it visible
+        clone.classList.remove('d-none');
+        clone.removeAttribute('id');  // Remove the id to prevent duplicates
+
+        // Append the cloned template to the form
+        experienceTemplate.parentNode.insertBefore(clone, experienceTemplate);
+
+        // Rename the fields dynamically (add "_new" to the names so the form handler can distinguish new entries)
+        var fields = clone.querySelectorAll('input');
+        fields.forEach(function(field) {
+            field.name = field.name.replace('_new', `_${document.querySelectorAll('.experience-entry').length}`);
+        });
+    });
+</script>
+{% endblock %}
